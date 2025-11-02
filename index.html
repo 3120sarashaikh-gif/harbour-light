@@ -1,0 +1,588 @@
+<!doctype html>
+<html lang="en">
+<!--
+Harbour Light - Single-file Web App (index.html)
+A Guiding Light for Immigrants in a New Land
+Author: Generated for user (Harbour Light prototype)
+Instructions:
+ - Save this file as index.html and open in a browser (Chrome/Firefox/Edge).
+ - For location-based filtering, allow browser geolocation OR enter an address (latitude,longitude).
+ - Data persists in browser localStorage. To reset stored data, open DevTools -> Application -> Clear Storage.
+ - Extend translations by editing 'TRANSLATIONS' object in the script.
+-->
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Harbour Light — A Guiding Light for Immigrants</title>
+  <style>
+    :root{
+      --bg1:#FFFBF0; --bg2:#F0F7FF;
+      --accent1:#FF6B6B; --accent2:#4D96FF; --accent3:#7BD389;
+      --muted:#6B7280; --card:#FFFFFF;
+      --glass: rgba(255,255,255,0.65);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; min-height:100vh;
+      background: radial-gradient(circle at 10% 10%, #FFF6F6 0%, #F7FBFF 30%, #F0FBF9 100%);
+      color:#0f172a; -webkit-font-smoothing:antialiased;
+      padding:20px;
+    }
+    header{
+      display:flex; gap:16px; align-items:center;
+      justify-content:space-between; max-width:1200px; margin:0 auto 18px;
+    }
+    .brand{
+      display:flex; gap:12px; align-items:center;
+    }
+    .logo{
+      width:64px; height:64px; border-radius:12px;
+      background: linear-gradient(135deg,var(--accent2),var(--accent3)); color:white;
+      display:flex; align-items:center; justify-content:center; font-weight:700; font-size:20px;
+      box-shadow: 0 6px 18px rgba(77,150,255,0.18), 0 1px 0 rgba(255,255,255,0.6) inset;
+    }
+    h1{margin:0; font-size:20px}
+    p.lead{margin:0; color:var(--muted); font-size:13px}
+    .controls{display:flex; gap:8px; align-items:center;}
+    .select, .btn, .input {
+      border-radius:10px; padding:8px 12px; border: none; outline:none; font-size:14px;
+      background:var(--card); box-shadow: 0 6px 18px rgba(12,18,35,0.06);
+    }
+    .btn{cursor:pointer}
+    main{max-width:1200px; margin:8px auto; display:grid; grid-template-columns: 380px 1fr; gap:18px;}
+    /* Sidebar */
+    .sidebar{position:sticky; top:20px; align-self:start}
+    .card{background:var(--card); border-radius:14px; padding:14px; box-shadow: 0 10px 30px rgba(12,18,35,0.06); margin-bottom:14px}
+    .search{display:flex; gap:8px; align-items:center}
+    input[type="search"]{flex:1; padding:10px 12px; border-radius:10px; border:1px solid #eef2f7}
+    .filters{display:flex; flex-wrap:wrap; gap:8px; margin-top:10px}
+    .chip{padding:6px 10px; border-radius:999px; background:linear-gradient(90deg,#fff,#fbfbff); border:1px solid #EEF2F7; cursor:pointer; font-size:13px}
+    .chip.active{background:linear-gradient(90deg,var(--accent2),var(--accent3)); color:white; border:none; box-shadow: 0 8px 30px rgba(77,150,255,0.12)}
+    .small{font-size:13px; color:var(--muted)}
+    /* Directory list */
+    .list{display:grid; gap:10px}
+    .list-item{display:flex; gap:12px; align-items:flex-start; padding:10px; border-radius:10px; border:1px solid #F1F5F9; background:linear-gradient(180deg, rgba(255,255,255,1), rgba(250,252,255,0.6))}
+    .icon{
+      width:54px; height:54px; border-radius:10px; display:flex; align-items:center; justify-content:center; color:white; font-weight:700;
+      background:linear-gradient(135deg,var(--accent1),#FF9A8B);
+      flex-shrink:0;
+    }
+    .meta{flex:1}
+    .meta h3{margin:0;font-size:15px}
+    .meta p{margin:6px 0 0; color:var(--muted); font-size:13px}
+    .meta .distance{font-size:12px; color:#3b82f6; font-weight:600}
+    .actions{display:flex; gap:8px; align-items:center}
+    .pill{padding:6px 8px; border-radius:8px; font-size:13px; cursor:pointer; border: none; background:var(--accent2); color:white}
+    /* Testimonials & Helplines */
+    .testimonial{font-style:italic; color:#0f172a; background: linear-gradient(90deg, rgba(255,255,255,0.5), rgba(255,255,255,0.4)); padding:12px; border-radius:10px}
+    .helpline{display:flex; gap:10px; align-items:center; padding:10px; border-radius:10px}
+    .helpline .call{font-weight:700; color:white; background:linear-gradient(135deg,var(--accent1),#FF8A7A); padding:8px 10px; border-radius:8px}
+    /* Add form */
+    form.add-form{display:grid; gap:8px}
+    textarea, select, input[type="text"], input[type="tel"], input[type="number"]{padding:10px; border-radius:8px; border:1px solid #e6eefc; width:100%}
+    .row{display:flex; gap:8px}
+    /* top content */
+    .hero{display:flex; gap:18px; align-items:center; padding:18px; border-radius:14px; background:linear-gradient(90deg, rgba(255,255,255,0.7), rgba(255,255,255,0.6));}
+    .hero .left{flex:1}
+    .stats{display:flex; gap:12px; margin-top:10px}
+    .stat{padding:10px; border-radius:10px; background:linear-gradient(90deg,#ffffff,#f8fbff); text-align:center; min-width:110px}
+    /* footer */
+    footer{max-width:1200px; margin:18px auto;color:var(--muted); font-size:13px}
+    /* responsive */
+    @media(max-width:980px){
+      main{grid-template-columns:1fr; padding-bottom:40px}
+      .sidebar{position:static}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <div class="logo" aria-hidden>HL</div>
+      <div>
+        <h1 id="title">Harbour Light</h1>
+        <p class="lead" id="subtitle">A Guiding Light for Immigrants in a New Land</p>
+      </div>
+    </div>
+
+    <div class="controls">
+      <select id="lang" class="select" title="Language">
+        <option value="en">English</option>
+        <option value="es">Español</option>
+        <option value="fr">Français</option>
+        <option value="ar">العربية</option>
+      </select>
+      <button class="btn" id="useLocation">Use My Location</button>
+      <input id="manualLocation" class="input" placeholder="Enter lat,lng (e.g. 40.7128,-74.0060)" />
+      <button class="btn" id="resetData" title="Reset demo data">Reset</button>
+    </div>
+  </header>
+
+  <main>
+    <aside class="sidebar">
+      <div class="card hero">
+        <div class="left">
+          <h2 id="greeting">Find verified, local help</h2>
+          <p class="small" id="heroText">Search essential services — healthcare, legal aid, housing, food, employment, courses — in your area.</p>
+          <div class="stats" style="margin-top:12px">
+            <div class="stat"><div style="font-weight:700" id="serviceCount">0</div><div class="small">Services</div></div>
+            <div class="stat"><div style="font-weight:700" id="courseCount">0</div><div class="small">Free Courses</div></div>
+            <div class="stat"><div style="font-weight:700" id="storiesCount">0</div><div class="small">Stories</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="search">
+          <input type="search" id="q" placeholder="Search services, keywords, languages..." />
+          <button class="btn" id="searchBtn">Search</button>
+        </div>
+
+        <div class="filters" id="categoryFilters" style="margin-top:10px">
+          <!-- category chips injected -->
+        </div>
+
+        <div style="margin-top:10px">
+          <label class="small">Radius (km)</label>
+          <input id="radius" type="number" min="1" max="500" value="50" />
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 id="helplineTitle">Crisis Helplines</h3>
+        <div class="helpline" style="justify-content:space-between;">
+          <div>
+            <div class="small">Emergency Medical</div>
+            <div style="font-weight:700">+1 555 911 100</div>
+          </div>
+          <a class="call" href="tel:+1555911100" id="callMedical">Call</a>
+        </div>
+        <div class="helpline" style="justify-content:space-between;margin-top:8px">
+          <div>
+            <div class="small">Legal Support</div>
+            <div style="font-weight:700">+1 555 911 200</div>
+          </div>
+          <a class="call" href="tel:+1555911200">Call</a>
+        </div>
+        <div class="helpline" style="justify-content:space-between;margin-top:8px">
+          <div>
+            <div class="small">Mental Health / Crisis</div>
+            <div style="font-weight:700">+1 555 911 300</div>
+          </div>
+          <a class="call" href="tel:+1555911300">Call</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 id="addTitle">Add a Resource</h3>
+        <form id="addForm" class="add-form">
+          <input id="r_name" placeholder="Name / Organisation" required />
+          <input id="r_phone" placeholder="Phone (optional)" />
+          <input id="r_category" placeholder="Category (e.g. Healthcare, Housing)" />
+          <input id="r_location" placeholder="lat,lng (e.g. 51.5074,-0.1278)" />
+          <textarea id="r_description" rows="3" placeholder="Short description & languages served"></textarea>
+          <div class="row">
+            <button class="btn" type="submit">Add Resource</button>
+            <button class="btn" type="button" id="addSample">Add Sample</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="card">
+        <h3 id="storiesTitle">Community Stories</h3>
+        <div id="stories" style="display:grid; gap:8px; margin-top:8px">
+          <!-- testimonials -->
+        </div>
+      </div>
+    </aside>
+
+    <section>
+      <div class="card">
+        <h2 id="resultsHeader">Nearby Services</h2>
+        <p class="small" id="resultsSub">Showing verified resources in your chosen radius.</p>
+        <div id="list" class="list" style="margin-top:12px"></div>
+
+        <div style="margin-top:16px">
+          <h3 id="coursesTitle">Free Courses & Skill-building</h3>
+          <div id="courses" style="display:grid; gap:8px; margin-top:8px"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 id="aboutTitle">About Harbour Light</h3>
+        <p class="small" id="aboutText">Harbour Light consolidates verified, location-specific information — building pathways to stability through crisis support, skill-building, and community connection.</p>
+        <div style="margin-top:12px">
+          <strong>Principles:</strong>
+          <ul>
+            <li>Verified & local</li>
+            <li>Multilingual</li>
+            <li>Community-sourced stories</li>
+            <li>Open & extensible</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div style="max-width:1200px; margin:0 auto; display:flex; justify-content:space-between; gap:12px; align-items:center; flex-wrap:wrap">
+      <div class="small">© Harbour Light — A community initiative</div>
+      <div class="small">Prototype • Data stored locally • Extend for server & verification workflow</div>
+    </div>
+  </footer>
+
+  <script>
+    /* ========= TRANSLATIONS =========
+       Keep translations in this object. Keys are message ids used above.
+       Add languages or edit strings as needed.
+    */
+    const TRANSLATIONS = {
+      en: {
+        title: "Harbour Light",
+        subtitle: "A Guiding Light for Immigrants in a New Land",
+        greeting: "Find verified, local help",
+        heroText: "Search essential services — healthcare, legal aid, housing, food, employment, courses — in your area.",
+        helplineTitle: "Crisis Helplines",
+        addTitle: "Add a Resource",
+        storiesTitle: "Community Stories",
+        resultsHeader: "Nearby Services",
+        resultsSub: "Showing verified resources in your chosen radius.",
+        coursesTitle: "Free Courses & Skill-building",
+        aboutTitle: "About Harbour Light",
+        aboutText: "Harbour Light consolidates verified, location-specific information — building pathways to stability through crisis support, skill-building, and community connection."
+      },
+      es: {
+        title: "Harbour Light",
+        subtitle: "Una luz guía para inmigrantes en un nuevo país",
+        greeting: "Encuentra ayuda local verificada",
+        heroText: "Busca servicios esenciales — salud, asistencia legal, vivienda, alimentos, empleo, cursos — en tu área.",
+        helplineTitle: "Líneas de emergencia",
+        addTitle: "Agregar un recurso",
+        storiesTitle: "Historias de la comunidad",
+        resultsHeader: "Servicios cercanos",
+        resultsSub: "Mostrando recursos verificados en tu radio seleccionado.",
+        coursesTitle: "Cursos gratuitos y capacitación",
+        aboutTitle: "Acerca de Harbour Light",
+        aboutText: "Harbour Light consolida información verificada y específica de ubicación — creando caminos hacia la estabilidad mediante apoyo en crisis, capacitación y conexión comunitaria."
+      },
+      fr: {
+        title: "Harbour Light",
+        subtitle: "Une lumière guide pour les immigrés dans un nouveau pays",
+        greeting: "Trouvez de l'aide locale vérifiée",
+        heroText: "Recherchez des services essentiels — santé, aide juridique, logement, nourriture, emploi, cours — dans votre région.",
+        helplineTitle: "Lignes d'urgence",
+        addTitle: "Ajouter une ressource",
+        storiesTitle: "Histoires de la communauté",
+        resultsHeader: "Services à proximité",
+        resultsSub: "Affichage des ressources vérifiées dans votre rayon choisi.",
+        coursesTitle: "Cours gratuits & Renforcement de compétences",
+        aboutTitle: "À propos de Harbour Light",
+        aboutText: "Harbour Light consolide des informations vérifiées et spécifiques à un lieu — créant des voies vers la stabilité grâce au soutien en cas de crise, à la formation et à la connexion communautaire."
+      },
+      ar: {
+        title: "منارة الميناء",
+        subtitle: "ضوء مرشد للمهاجرين في بلد جديد",
+        greeting: "ابحث عن مساعدة محلية موثوقة",
+        heroText: "ابحث عن الخدمات الأساسية — الرعاية الصحية، الدعم القانوني، السكن، الغذاء، العمل، الدورات — في منطقتك.",
+        helplineTitle: "خطوط الطوارئ",
+        addTitle: "إضافة مصدر",
+        storiesTitle: "قصص المجتمع",
+        resultsHeader: "الخدمات القريبة",
+        resultsSub: "عرض الموارد الموثوقة ضمن النطاق المختار.",
+        coursesTitle: "دورات مجانية وبناء مهارات",
+        aboutTitle: "عن Harbour Light",
+        aboutText: "تجمع Harbour Light معلومات موثوقة ومحددة الموقع — لبناء سبل نحو الاستقرار من خلال دعم الأزمات وبناء المهارات والاتصال المجتمعي."
+      }
+    };
+
+    /* ========= SAMPLE DATA =========
+       Each resource has:
+        id, name, phone, category, lat, lng, description, verified (bool)
+       You can extend or replace this with server-side data later.
+    */
+    const SAMPLE_RESOURCES = [
+      {id:'r1', name:'Community Health Center', phone:'+1 555 101 200', category:'Healthcare', lat:40.7128, lng:-74.0060, description:'Free and low-cost clinics. Languages: English, Español. Walk-ins welcome.', verified:true},
+      {id:'r2', name:'Newcomer Legal Aid', phone:'+1 555 202 300', category:'Legal', lat:40.730610, lng:-73.935242, description:'Immigration consultations on sliding scale. Languages: English, Français.', verified:true},
+      {id:'r3', name:'Harbour Housing Help', phone:'+1 555 303 400', category:'Housing', lat:40.758896, lng:-73.985130, description:'Temporary shelters and housing referrals. Languages: English, العربية.', verified:true},
+      {id:'r4', name:'Fresh Food Bank', phone:'+1 555 404 500', category:'Food', lat:40.7060, lng:-74.0086, description:'Weekly food distribution. Documents not required.', verified:true},
+      {id:'r5', name:'Jobs Gateway', phone:'+1 555 505 600', category:'Employment', lat:40.748817, lng:-73.985428, description:'Local job listings, CV support, interview prep.', verified:true}
+    ];
+
+    const SAMPLE_COURSES = [
+      {id:'c1', title:'Intro to Digital Skills', provider:'Community College', link:'#', description:'Free course for basic computer literacy.'},
+      {id:'c2', title:'Language Buddy Program', provider:'City Library', link:'#', description:'Volunteer-run language practice groups.'},
+      {id:'c3', title:'Workplace Safety & Rights', provider:'NGO', link:'#', description:'Know your labour rights and safety basics.'}
+    ];
+
+    const SAMPLE_STORIES = [
+      {id:'s1', text:'"Harbour Light helped me find a clinic that treated my son — we felt safe and supported." — Amina'},
+      {id:'s2', text:'"The legal clinic connected me with pro bono counsel who helped with my paperwork." — Mateo'}
+    ];
+
+    /* ========= App state ========= */
+    let state = {
+      lang: 'en',
+      resources: [], courses: [], stories: [],
+      userLocation: null, // {lat, lng}
+      categoryFilter: null,
+      radiusKm: 50,
+      query: ''
+    };
+
+    /* utility - distance in km (Haversine) */
+    function distanceKm(aLat,aLng,bLat,bLng){
+      if(aLat==null||bLat==null) return Infinity;
+      const R=6371;
+      const toRad = v => v*Math.PI/180;
+      const dLat = toRad(bLat-aLat);
+      const dLng = toRad(bLng-aLng);
+      const A = Math.sin(dLat/2)*Math.sin(dLat/2)+Math.cos(toRad(aLat))*Math.cos(toRad(bLat))*Math.sin(dLng/2)*Math.sin(dLng/2);
+      const C = 2*Math.atan2(Math.sqrt(A), Math.sqrt(1-A));
+      return R*C;
+    }
+
+    /* ------- Persistence: localStorage ------- */
+    function saveState(){
+      localStorage.setItem('harbour_resources', JSON.stringify(state.resources));
+      localStorage.setItem('harbour_courses', JSON.stringify(state.courses));
+      localStorage.setItem('harbour_stories', JSON.stringify(state.stories));
+    }
+    function loadState(){
+      const rs = localStorage.getItem('harbour_resources');
+      const cs = localStorage.getItem('harbour_courses');
+      const ss = localStorage.getItem('harbour_stories');
+      state.resources = rs ? JSON.parse(rs) : SAMPLE_RESOURCES.slice();
+      state.courses = cs ? JSON.parse(cs) : SAMPLE_COURSES.slice();
+      state.stories = ss ? JSON.parse(ss) : SAMPLE_STORIES.slice();
+    }
+
+    /* ------- UI helpers ------- */
+    function t(k){
+      return (TRANSLATIONS[state.lang] && TRANSLATIONS[state.lang][k]) || TRANSLATIONS['en'][k] || k;
+    }
+
+    function applyTranslations(){
+      document.getElementById('title').textContent = t('title');
+      document.getElementById('subtitle').textContent = t('subtitle');
+      document.getElementById('greeting').textContent = t('greeting');
+      document.getElementById('heroText').textContent = t('heroText');
+      document.getElementById('helplineTitle').textContent = t('helplineTitle');
+      document.getElementById('addTitle').textContent = t('addTitle');
+      document.getElementById('storiesTitle').textContent = t('storiesTitle');
+      document.getElementById('resultsHeader').textContent = t('resultsHeader');
+      document.getElementById('resultsSub').textContent = t('resultsSub');
+      document.getElementById('coursesTitle').textContent = t('coursesTitle');
+      document.getElementById('aboutTitle').textContent = t('aboutTitle');
+      document.getElementById('aboutText').textContent = t('aboutText');
+    }
+
+    /* Render category chips */
+    function renderCategoryChips(){
+      const container = document.getElementById('categoryFilters');
+      container.innerHTML='';
+      const cats = [...new Set(state.resources.map(r => r.category || 'Other'))];
+      ['All', ...cats].forEach(cat=>{
+        const el = document.createElement('div');
+        el.className = 'chip ' + ((state.categoryFilter===null && cat==='All') || (state.categoryFilter===cat) ? 'active' :'');
+        el.textContent = cat;
+        el.onclick = ()=> {
+          state.categoryFilter = (cat==='All')? null : cat;
+          renderCategoryChips();
+          renderList();
+        };
+        container.appendChild(el);
+      });
+    }
+
+    /* Render resources list */
+    function renderList(){
+      const list = document.getElementById('list');
+      list.innerHTML='';
+      const radiusKm = Number(document.getElementById('radius').value) || state.radiusKm;
+      state.radiusKm = radiusKm;
+      const q = (document.getElementById('q').value || '').toLowerCase();
+      const filtered = state.resources
+        .filter(r=>{
+          if(state.categoryFilter && r.category !== state.categoryFilter) return false;
+          if(q){
+            const hay = (r.name+' '+(r.description||'')+' '+(r.category||'')).toLowerCase();
+            if(!hay.includes(q)) return false;
+          }
+          if(state.userLocation){
+            const d = distanceKm(state.userLocation.lat,state.userLocation.lng, r.lat, r.lng);
+            return d <= radiusKm;
+          }
+          return true;
+        })
+        .map(r=>{
+          if(state.userLocation){
+            r._distance = distanceKm(state.userLocation.lat,state.userLocation.lng, r.lat, r.lng);
+          } else r._distance = null;
+          return r;
+        })
+        .sort((a,b)=> (a._distance||99999)-(b._distance||99999));
+
+      if(filtered.length===0){
+        const no = document.createElement('div'); no.className='small'; no.textContent='No resources found. Try expanding the radius or add a resource.'; list.appendChild(no); return;
+      }
+
+      filtered.forEach(r=>{
+        const item = document.createElement('div'); item.className='list-item';
+        const icon = document.createElement('div'); icon.className='icon';
+        icon.textContent = (r.category||'?').slice(0,2).toUpperCase();
+        const meta = document.createElement('div'); meta.className='meta';
+        const h = document.createElement('h3'); h.textContent = r.name + (r.verified ? ' ✓' : '');
+        const p = document.createElement('p'); p.textContent = r.description;
+        const extra = document.createElement('div'); extra.style.marginTop='8px';
+        if(r.phone) extra.innerHTML = `<span class="small">Phone: </span><a href="tel:${r.phone.replace(/\s/g,'')}" class="small">${r.phone}</a>`;
+        if(r._distance!=null){
+          const dspan = document.createElement('div'); dspan.className='distance'; dspan.textContent = Math.round(r._distance*10)/10 + ' km';
+          extra.appendChild(document.createTextNode(' '));
+          extra.appendChild(dspan);
+        }
+        meta.appendChild(h); meta.appendChild(p); meta.appendChild(extra);
+        const actions = document.createElement('div'); actions.className='actions';
+        const nav = document.createElement('button'); nav.className='pill'; nav.textContent = 'Directions';
+        nav.onclick = ()=> {
+          // Open Google Maps directions in new tab (lat,lng)
+          const url = `https://www.google.com/maps/dir/?api=1&destination=${r.lat},${r.lng}`;
+          window.open(url, '_blank');
+        };
+        actions.appendChild(nav);
+        item.appendChild(icon); item.appendChild(meta); item.appendChild(actions);
+        list.appendChild(item);
+      });
+    }
+
+    /* Render courses and stories, stats */
+    function renderExtras(){
+      const courses = document.getElementById('courses'); courses.innerHTML='';
+      state.courses.forEach(c=>{
+        const el = document.createElement('div'); el.className='list-item';
+        el.innerHTML = `<div style="flex:1"><strong>${c.title}</strong><div class="small">${c.provider} — ${c.description}</div></div>
+                        <div style="display:flex;align-items:center"><a class="pill" href="${c.link}" target="_blank">Open</a></div>`;
+        courses.appendChild(el);
+      });
+
+      const stories = document.getElementById('stories'); stories.innerHTML='';
+      state.stories.forEach(s=>{
+        const el = document.createElement('div'); el.className='testimonial'; el.textContent = s.text;
+        stories.appendChild(el);
+      });
+
+      document.getElementById('serviceCount').textContent = state.resources.length;
+      document.getElementById('courseCount').textContent = state.courses.length;
+      document.getElementById('storiesCount').textContent = state.stories.length;
+    }
+
+    /* Add resource handler */
+    function setupAddForm(){
+      const form = document.getElementById('addForm');
+      form.addEventListener('submit', e=>{
+        e.preventDefault();
+        const name = document.getElementById('r_name').value.trim();
+        if(!name) return alert('Name required');
+        const phone = document.getElementById('r_phone').value.trim();
+        const category = document.getElementById('r_category').value.trim() || 'Other';
+        const loc = document.getElementById('r_location').value.trim();
+        let lat=null,lng=null;
+        if(loc){
+          const parts = loc.split(',').map(x=>Number(x.trim()));
+          if(parts.length===2 && !isNaN(parts[0]) && !isNaN(parts[1])){ lat=parts[0]; lng=parts[1]; }
+        }
+        const description = document.getElementById('r_description').value.trim();
+        const id = 'r' + Date.now();
+        const resource = {id, name, phone, category, lat, lng, description, verified:false};
+        state.resources.push(resource);
+        saveState();
+        form.reset();
+        renderCategoryChips(); renderList(); renderExtras();
+        alert('Resource added locally. Marking as unverified until admin verification.');
+      });
+      document.getElementById('addSample').onclick = ()=>{
+        state.resources.push({
+          id:'r'+Date.now(),
+          name:'Volunteer Language Hub', phone:'+1 555 777 800', category:'Education', lat:40.721, lng:-73.99,
+          description:'Volunteer tutors for language practice. Languages: multiple.', verified:true
+        });
+        saveState(); renderCategoryChips(); renderList(); renderExtras();
+      };
+    }
+
+    /* Use geolocation */
+    function useGeolocation(){
+      if(!navigator.geolocation) return alert('Geolocation not supported');
+      navigator.geolocation.getCurrentPosition(pos=>{
+        state.userLocation = {lat: pos.coords.latitude, lng: pos.coords.longitude};
+        document.getElementById('manualLocation').value = `${state.userLocation.lat.toFixed(6)},${state.userLocation.lng.toFixed(6)}`;
+        renderList();
+      }, err=>{
+        alert('Unable to fetch location: ' + (err.message || err.code));
+      }, {enableHighAccuracy:true, timeout:10000});
+    }
+
+    /* Manual location input */
+    function manualLocationToState(){
+      const v = document.getElementById('manualLocation').value.trim();
+      if(!v) { state.userLocation = null; renderList(); return; }
+      const parts = v.split(',').map(x=>Number(x.trim()));
+      if(parts.length===2 && !isNaN(parts[0]) && !isNaN(parts[1])){
+        state.userLocation = {lat:parts[0], lng:parts[1]};
+        renderList();
+      } else {
+        alert('Enter location as "lat,lng"');
+      }
+    }
+
+    /* Reset demo data */
+    function resetDemo(){
+      if(!confirm('Reset local data to defaults?')) return;
+      localStorage.removeItem('harbour_resources');
+      localStorage.removeItem('harbour_courses');
+      localStorage.removeItem('harbour_stories');
+      loadState(); renderAll();
+    }
+
+    /* Initialize UI events */
+    function setupUI(){
+      document.getElementById('lang').value = state.lang;
+      document.getElementById('lang').addEventListener('change', e=>{
+        state.lang = e.target.value; applyTranslations();
+      });
+      document.getElementById('useLocation').addEventListener('click', useGeolocation);
+      document.getElementById('manualLocation').addEventListener('change', manualLocationToState);
+      document.getElementById('searchBtn').addEventListener('click', renderList);
+      document.getElementById('q').addEventListener('keyup', (e)=>{ if(e.key==='Enter') renderList(); });
+      document.getElementById('radius').addEventListener('change', renderList);
+      document.getElementById('resetData').addEventListener('click', resetDemo);
+      setupAddForm();
+    }
+
+    function renderAll(){
+      applyTranslations();
+      renderCategoryChips();
+      renderExtras();
+      renderList();
+    }
+
+    /* Startup */
+    (function init(){
+      loadState();
+      state.lang = navigator.language && navigator.language.startsWith('es') ? 'es' : 'en';
+      setupUI();
+      renderAll();
+      // If no userLocation, try a gentle approximate (for demo only): set to sample city (NYC)
+      if(!state.userLocation) state.userLocation = {lat:40.7128, lng:-74.0060};
+    })();
+
+    /* Accessibility: keyboard shortcut: 'L' to toggle location prompt */
+    window.addEventListener('keydown', (e)=>{
+      if(e.key.toLowerCase()==='l') alert('Hint: click "Use My Location" or enter lat,lng in the box.');
+    });
+
+    /* Expose to console for debugging */
+    window.HarbourLight = {state, saveState, loadState, renderAll, distanceKm};
+  </script>
+</body>
+</html>
